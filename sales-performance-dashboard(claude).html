@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Performance Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f0f4f8; }
+        .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); grid-gap: 20px; }
+        .widget { background-color: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .full-width { grid-column: span 3; }
+        .half-width { grid-column: span 2; }
+        h2 { margin-top: 0; color: #333; }
+        .kpi-container { display: flex; justify-content: space-between; flex-wrap: wrap; }
+        .kpi { text-align: center; padding: 10px; flex: 1; min-width: 120px; }
+        .kpi h3 { margin: 0; font-size: 14px; color: #666; }
+        .kpi p { margin: 5px 0 0; font-size: 24px; font-weight: bold; color: #0066cc; }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="widget full-width">
+            <h2>Key Performance Indicators</h2>
+            <div class="kpi-container">
+                <div class="kpi">
+                    <h3>Total Revenue</h3>
+                    <p id="totalRevenue"></p>
+                </div>
+                <div class="kpi">
+                    <h3>Total Profit</h3>
+                    <p id="totalProfit"></p>
+                </div>
+                <div class="kpi">
+                    <h3>Avg Order Value</h3>
+                    <p id="avgOrderValue"></p>
+                </div>
+                <div class="kpi">
+                    <h3>Total Units Sold</h3>
+                    <p id="totalUnitsSold"></p>
+                </div>
+                <div class="kpi">
+                    <h3>Profit Margin</h3>
+                    <p id="profitMargin"></p>
+                </div>
+            </div>
+        </div>
+        <div class="widget half-width">
+            <h2>Total Revenue by Region</h2>
+            <canvas id="revenueByRegion"></canvas>
+        </div>
+        <div class="widget">
+            <h2>Online vs Offline Sales</h2>
+            <canvas id="salesChannels"></canvas>
+        </div>
+        <div class="widget">
+            <h2>Product Category Performance</h2>
+            <canvas id="productPerformance"></canvas>
+        </div>
+        <div class="widget">
+            <h2>Profit Margin by Product</h2>
+            <canvas id="profitMarginByProduct"></canvas>
+        </div>
+        <div class="widget full-width">
+            <h2>Sales Trend Over Time</h2>
+            <canvas id="salesTrend"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // CSV data
+        const csvData = `Date,Region,Product,Sales Channel,Units Sold,Unit Price,Total Revenue,Total Cost,Profit
+2023-01-15,North,Electronics,Online,120,299.99,35998.8,25199.16,10799.64
+2023-01-22,South,Clothing,Offline,85,59.99,5099.15,3059.49,2039.66
+2023-02-05,East,Home Goods,Online,95,149.99,14249.05,9974.34,4274.72
+2023-02-18,West,Electronics,Offline,110,279.99,30798.9,21559.23,9239.67
+2023-03-03,North,Clothing,Online,150,49.99,7498.5,4499.1,2999.4
+2023-03-20,South,Home Goods,Offline,70,129.99,9099.3,6369.51,2729.79
+2023-04-02,East,Electronics,Online,130,319.99,41598.7,29119.09,12479.61
+2023-04-15,West,Clothing,Offline,100,69.99,6999.0,4199.4,2799.6
+2023-05-01,North,Home Goods,Online,80,159.99,12799.2,8959.44,3839.76
+2023-05-18,South,Electronics,Offline,90,289.99,26099.1,18269.37,7829.73
+2023-06-04,East,Clothing,Online,140,54.99,7698.6,4619.16,3079.44
+2023-06-21,West,Home Goods,Offline,75,139.99,10499.25,7349.48,3149.78`;
+
+        // Parse CSV data
+        const parsedData = csvData.split('\n').slice(1).map(row => {
+            const [date, region, product, channel, unitsSold, unitPrice, totalRevenue, totalCost, profit] = row.split(',');
+            return {
+                date: new Date(date),
+                region,
+                product,
+                channel,
+                unitsSold: parseInt(unitsSold),
+                unitPrice: parseFloat(unitPrice),
+                totalRevenue: parseFloat(totalRevenue),
+                totalCost: parseFloat(totalCost),
+                profit: parseFloat(profit)
+            };
+        });
+
+        // Calculate KPIs
+        const totalRevenue = parsedData.reduce((sum, row) => sum + row.totalRevenue, 0);
+        const totalProfit = parsedData.reduce((sum, row) => sum + row.profit, 0);
+        const totalUnitsSold = parsedData.reduce((sum, row) => sum + row.unitsSold, 0);
+        const avgOrderValue = totalRevenue / parsedData.length;
+        const profitMargin = (totalProfit / totalRevenue) * 100;
+
+        // Update KPI values
+        document.getElementById('totalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
+        document.getElementById('totalProfit').textContent = `$${totalProfit.toFixed(2)}`;
+        document.getElementById('avgOrderValue').textContent = `$${avgOrderValue.toFixed(2)}`;
+        document.getElementById('totalUnitsSold').textContent = totalUnitsSold;
+        document.getElementById('profitMargin').textContent = `${profitMargin.toFixed(2)}%`;
+
+        // Revenue by Region
+        const revenueByRegion = parsedData.reduce((acc, row) => {
+            acc[row.region] = (acc[row.region] || 0) + row.totalRevenue;
+            return acc;
+        }, {});
+
+        new Chart(document.getElementById('revenueByRegion'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(revenueByRegion),
+                datasets: [{
+                    label: 'Revenue',
+                    data: Object.values(revenueByRegion),
+                    backgroundColor: 'rgba(54, 162, 235, 0.8)'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Revenue ($)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Online vs Offline Sales
+        const salesByChannel = parsedData.reduce((acc, row) => {
+            acc[row.channel] = (acc[row.channel] || 0) + row.totalRevenue;
+            return acc;
+        }, {});
+
+        new Chart(document.getElementById('salesChannels'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(salesByChannel),
+                datasets: [{
+                    data: Object.values(salesByChannel),
+                    backgroundColor: ['rgba(255, 99, 132, 0.8)', 'rgba(54, 162, 235, 0.8)']
+                }]
+            }
+        });
+
+        // Product Category Performance
+        const productPerformance = parsedData.reduce((acc, row) => {
+            if (!acc[row.product]) {
+                acc[row.product] = { revenue: 0, profit: 0, unitsSold: 0 };
+            }
+            acc[row.product].revenue += row.totalRevenue;
+            acc[row.product].profit += row.profit;
+            acc[row.product].unitsSold += row.unitsSold;
+            return acc;
+        }, {});
+
+        new Chart(document.getElementById('productPerformance'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(productPerformance),
+                datasets: [
+                    {
+                        label: 'Revenue',
+                        data: Object.values(productPerformance).map(p => p.revenue),
+                        backgroundColor: 'rgba(255, 99, 132, 0.8)'
+                    },
+                    {
+                        label: 'Profit',
+                        data: Object.values(productPerformance).map(p => p.profit),
+                        backgroundColor: 'rgba(75, 192, 192, 0.8)'
+                    },
+                    {
+                        label: 'Units Sold',
+                        data: Object.values(productPerformance).map(p => p.unitsSold),
+                        backgroundColor: 'rgba(255, 206, 86, 0.8)'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Profit Margin by Product
+        const profitMarginByProduct = Object.entries(productPerformance).map(([product, data]) => ({
+            product,
+            profitMargin: (data.profit / data.revenue) * 100
+        }));
+
+        new Chart(document.getElementById('profitMarginByProduct'), {
+            type: 'bar',
+            data: {
+                labels: profitMarginByProduct.map(p => p.product),
+                datasets: [{
+                    label: 'Profit Margin (%)',
+                    data: profitMarginByProduct.map(p => p.profitMargin),
+                    backgroundColor: 'rgba(153, 102, 255, 0.8)'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Profit Margin (%)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Sales Trend Over Time
+        const salesByDate = parsedData.reduce((acc, row) => {
+            const dateStr = row.date.toISOString().split('T')[0];
+            acc[dateStr] = (acc[dateStr] || 0) + row.totalRevenue;
+            return acc;
+        }, {});
+
+        new Chart(document.getElementById('salesTrend'), {
+            type: 'line',
+            data: {
+                labels: Object.keys(salesByDate),
+                datasets: [{
+                    label: 'Sales',
+                    data: Object.values(salesByDate),
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Sales ($)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
