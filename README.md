@@ -43,16 +43,16 @@ Used Google Vertex AI to build and deploy machine learning models with minimal c
 **Steps followed:**
 - Imported datasets into Vertex AI.
 - Used AutoML for quick prototyping.
-- <img width="1488" height="778" alt="image" src="https://github.com/user-attachments/assets/a78b5c9b-cdf7-438a-bc5e-f21c3f3556a4" />
+- <img width="1000" height="600" alt="image" src="https://github.com/user-attachments/assets/a78b5c9b-cdf7-438a-bc5e-f21c3f3556a4" />
 
 - Evaluated models with metrics like accuracy, precision, recall.
-- <img width="1500" height="780" alt="image" src="https://github.com/user-attachments/assets/feb22c2d-c455-432d-b4be-f13a723ad1f9" />
+- <img width="1000" height="600" alt="image" src="https://github.com/user-attachments/assets/feb22c2d-c455-432d-b4be-f13a723ad1f9" />
 
 - Deployed models to REST endpoints for predictions.
-- <img width="1500" height="776" alt="image" src="https://github.com/user-attachments/assets/b00363ff-85e5-4c04-974d-c2b4cb6f3910" />
+- <img width="1000" height="600" alt="image" src="https://github.com/user-attachments/assets/b00363ff-85e5-4c04-974d-c2b4cb6f3910" />
 
 - Integrated models into Jupyter Notebooks via Google Cloud SDK.
-- <img width="1500" height="644" alt="image" src="https://github.com/user-attachments/assets/69b115ea-1a5a-4293-bb16-7786f6a8802c" />
+- <img width="1000" height="600" alt="image" src="https://github.com/user-attachments/assets/69b115ea-1a5a-4293-bb16-7786f6a8802c" />
 
 
 ---
