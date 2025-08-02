@@ -43,7 +43,7 @@ Used Google Vertex AI to build and deploy machine learning models with minimal c
 **Steps followed:**
 - Imported datasets into Vertex AI.
 - Used AutoML for quick prototyping.
-- <img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/a78b5c9b-cdf7-438a-bc5e-f21c3f3556a4" />
+- <img width="600" height="400" alt="image" src="https://github.com/user-attachments/assets/a78b5c9b-cdf7-438a-bc5e-f21c3f3556a4" />
 
 - Evaluated models with metrics like accuracy, precision, recall.
 - <img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/feb22c2d-c455-432d-b4be-f13a723ad1f9" />
