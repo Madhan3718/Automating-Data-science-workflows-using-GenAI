@@ -17,6 +17,9 @@ Claude AI was used to automatically generate interactive dashboards from uploade
   - Suggest best visualizations.
   - Create complete dashboards with axes, legends, and color schemes.
   - Improve dashboard aesthetics based on brand/theme.
+<img width="500" height="350" alt="Sales_Dashboard" src="https://github.com/user-attachments/assets/a29b0dd9-4429-49df-acbc-c5a6f0fa737e" />
+
+
 
 ---
 
