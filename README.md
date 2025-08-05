@@ -35,6 +35,7 @@ Julius.ai helped automate the entire EDA process, saving significant manual effo
   - Outlier detection.
   - Visualization creation: histograms, boxplots, heatmaps, etc.
 - Generated downloadable HTML EDA reports for sharing with stakeholders.
+<img width="500" height="350" alt="Screenshot (113)" src="https://github.com/user-attachments/assets/66076aed-d428-4f72-852a-f0090a9b632b" />
 
 
 ---
